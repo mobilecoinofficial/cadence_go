@@ -1,7 +1,5 @@
 package cadence_go
 
-// github.com/bcpitutor/gosharedlibs/cadence
-
 import (
 	"errors"
 
