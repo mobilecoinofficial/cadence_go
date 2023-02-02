@@ -69,7 +69,7 @@ func POCChildWorkflow1(ctx workflow.Context, input string) (*POCDemoWorkflowResu
 	err := workflow.ExecuteActivity(
 		nctx,
 		POCDemoActivity1,
-		input,
+		res,
 	).Get(ctx, nil)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow1 failed.", zap.Error(err))
