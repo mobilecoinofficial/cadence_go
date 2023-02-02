@@ -68,7 +68,7 @@ func POCChildWorkflow1(ctx workflow.Context, input string) (string, error) {
 		nctx,
 		POCDemoActivity1,
 		input,
-	).Get(ctx, res)
+	).Get(ctx, &res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow1 failed.", zap.Error(err))
 		return "", err
@@ -94,7 +94,7 @@ func POCChildWorkflow2(ctx workflow.Context, input string) (string, error) {
 		nctx,
 		POCDemoActivity2,
 		input,
-	).Get(ctx, res)
+	).Get(ctx, &res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow2 failed.", zap.Error(err))
 		return "", err
@@ -120,7 +120,7 @@ func POCChildWorkflow3(ctx workflow.Context, input string) (string, error) {
 		nctx,
 		POCDemoActivity3,
 		input,
-	).Get(ctx, res)
+	).Get(ctx, &res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow3 failed.", zap.Error(err))
 		return "", err
