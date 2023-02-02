@@ -149,7 +149,7 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 
 	log.Printf("Starting Child Workflow1\n")
 
-	var result1 string
+	var result1 POCDemoWorkflowResult
 	var err error
 	future1 := workflow.ExecuteChildWorkflow(ctx1, POCChildWorkflow1, "input1")
 	err = future1.Get(ctx, &result1)
@@ -157,7 +157,7 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 		log.Printf("Error: %s", err)
 		os.Exit(1)
 	}
-	log.Printf("Child Workflow1 ended\n")
+	log.Printf("Child Workflow1 ended with result: %s\n", result1.Output)
 
 	cwo2 := workflow.ChildWorkflowOptions{
 		//WorkflowID:                   workflowID,
@@ -165,14 +165,14 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	}
 	ctx2 := workflow.WithChildOptions(ctx, cwo2)
 
-	var result2 string
+	var result2 POCDemoWorkflowResult
 	future2 := workflow.ExecuteChildWorkflow(ctx2, POCChildWorkflow2, "input2")
 	err = future2.Get(ctx, &result2)
 	if err != nil {
 		log.Printf("Error: %s", err)
 		os.Exit(1)
 	}
-	log.Printf("Child Workflow1 ended\n")
+	log.Printf("Child Workflow2 ended with result: %s\n", result2.Output)
 
 	// username := faker.Username()
 
@@ -198,6 +198,6 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	// }
 
 	return &POCDemoWorkflowResult{
-		Output: "POCDemoWorkflow is done for username: " + result2,
+		Output: "POCDemoWorkflow is done for username: " + fmt.Sprintf("%s/%s", result1.Output, result2.Output),
 	}, nil
 }
