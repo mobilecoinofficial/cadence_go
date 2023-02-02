@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/bxcodec/faker/v3"
@@ -18,17 +19,35 @@ type POCDemoWorkflowResult struct {
 }
 
 func POCDemoActivity1(ctx context.Context, input string) (string, error) {
-	workflowID := activity.GetInfo(ctx).WorkflowExecution.ID
+	//workflowID := activity.GetInfo(ctx).WorkflowExecution.ID
 
 	sentence := faker.Sentence()
+	hostname, _ := os.Hostname()
 
-	msg := fmt.Sprintf("POCDemo activity1 is running for workflow: %s, sentence: %s\n", workflowID, sentence)
+	msg := fmt.Sprintf("POCDemo activity1 is running on %s, sentence: %s\n", hostname, sentence)
 	activity.GetLogger(ctx).Info(
 		msg,
 		zap.String("input", input),
 	)
 
 	activitySummary := fmt.Sprintf("POCDemoActivity1, sentence: %s\n", sentence)
+
+	return activitySummary, nil
+}
+
+func POCDemoActivity2(ctx context.Context, input string) (string, error) {
+	//workflowID := activity.GetInfo(ctx).WorkflowExecution.ID
+
+	sentence := faker.Sentence()
+	hostname, _ := os.Hostname()
+
+	msg := fmt.Sprintf("POCDemo activity2 is running on %s, sentence: %s\n", hostname, sentence)
+	activity.GetLogger(ctx).Info(
+		msg,
+		zap.String("input", input),
+	)
+
+	activitySummary := fmt.Sprintf("POCDemoActivity2, sentence: %s\n", sentence)
 
 	return activitySummary, nil
 }
