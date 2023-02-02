@@ -123,7 +123,7 @@ func (h *CadenceHelper) SetupServiceConfig() {
 	}
 
 	if h.Config.DomainName == "" || h.Config.HostNameAndPort == "" || h.Config.ServiceName == "" {
-		fmt.Printf("Configuration Error: Following variables not found, neither in config file, nor in environment\nCAD_DOMAINNAME:%s\nCAD_SERVICENAME=%s\nCAD_HOSTANDPORT=%s\n\n", h.Config.DomainName, h.Config.ServiceName, h.Config.HostNameAndPort)
+		fmt.Printf("Configuration Error: One of the following variables not found. Neither in config file, nor in environment\nCAD_DOMAINNAME=%s\nCAD_SERVICENAME=%s\nCAD_HOSTANDPORT=%s\n\n", h.Config.DomainName, h.Config.ServiceName, h.Config.HostNameAndPort)
 		panic("Check your configuration")
 	}
 

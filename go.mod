@@ -3,6 +3,7 @@ module github.com/mobilecoinofficial/cadence_go
 go 1.19
 
 require (
+	github.com/bxcodec/faker/v3 v3.8.1
 	github.com/m3db/prometheus_client_golang v1.12.8
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/uber-go/tally v3.5.0+incompatible
