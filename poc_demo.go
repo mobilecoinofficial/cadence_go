@@ -142,7 +142,7 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	log.Println("Received POCDemoWorkflow. WorkflowID: ", workflowID)
 
 	cwo1 := workflow.ChildWorkflowOptions{
-		WorkflowID:                   workflowID,
+		//WorkflowID:                   workflowID,
 		ExecutionStartToCloseTimeout: time.Minute * 3,
 	}
 	ctx1 := workflow.WithChildOptions(ctx, cwo1)
@@ -160,7 +160,7 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	log.Printf("Child Workflow1 ended\n")
 
 	cwo2 := workflow.ChildWorkflowOptions{
-		WorkflowID:                   workflowID,
+		//WorkflowID:                   workflowID,
 		ExecutionStartToCloseTimeout: time.Minute * 3,
 	}
 	ctx2 := workflow.WithChildOptions(ctx, cwo2)
