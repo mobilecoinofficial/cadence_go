@@ -52,8 +52,10 @@ func POCDemoActivity2(ctx context.Context, input string) (string, error) {
 	return activitySummary, nil
 }
 
-func POCDemoWorkflow(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
-	log.Println("POCDemoWorkflow is triggered...")
+func POCChildWorkflow1(ctx workflow.Context, workflowID string) (*POCDemoWorkflowResult, error) {
+	log.Println("POCChildWorkflow1 is triggered...")
+
+	res := POCDemoWorkflowResult{}
 
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,
@@ -62,7 +64,65 @@ func POCDemoWorkflow(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 
 	nctx := workflow.WithActivityOptions(ctx, ao)
 
-	log.Println("Waiting for Completion...")
+	username := faker.Username()
+
+	err := workflow.ExecuteActivity(
+		nctx,
+		POCDemoActivity1,
+		username,
+	).Get(ctx, nil)
+	if err != nil {
+		workflow.GetLogger(ctx).Error("POCDemoActivity1 failed.", zap.Error(err))
+		return &res, err
+	}
+
+	return &POCDemoWorkflowResult{
+		Output: "POCDemoActivity1 is done for username: " + username,
+	}, nil
+
+}
+
+func POCChildWorkflow2(ctx workflow.Context, workflowID string) (*POCDemoWorkflowResult, error) {
+	log.Println("POCChildWorkflow2 is triggered...")
+
+	res := POCDemoWorkflowResult{}
+
+	ao := workflow.ActivityOptions{
+		ScheduleToStartTimeout: time.Minute,
+		StartToCloseTimeout:    time.Minute * 3,
+	}
+
+	nctx := workflow.WithActivityOptions(ctx, ao)
+
+	username := faker.Username()
+
+	err := workflow.ExecuteActivity(
+		nctx,
+		POCDemoActivity2,
+		username,
+	).Get(ctx, nil)
+	if err != nil {
+		workflow.GetLogger(ctx).Error("POCDemoActivity2 failed.", zap.Error(err))
+		return &res, err
+	}
+
+	return &POCDemoWorkflowResult{
+		Output: "POCDemoActivity2 is done for username: " + username,
+	}, nil
+
+}
+
+func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
+	log.Println("POCDemoWorkflow is triggered...")
+
+	// ao := workflow.ActivityOptions{
+	// 	ScheduleToStartTimeout: time.Minute,
+	// 	StartToCloseTimeout:    time.Minute * 3,
+	// }
+
+	//nctx := workflow.WithActivityOptions(ctx, ao)
+
+	log.Println("POCDemoWorkflow. Waiting for Completion...")
 	// if workflow.HasLastCompletionResult(ctx) {
 	// 	log.Println("Found last completion result...")
 	// 	var lastResult POCDemoWorkflowResult
@@ -75,33 +135,69 @@ func POCDemoWorkflow(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	// 	//startTime = lastResult.EndTime
 	// }
 
-	log.Println("Starting workflow...")
+	log.Println("POCDemoWorkflow. Starting workflow...")
 	//endTime := workflow.Now(ctx)
 
-	username := faker.Username()
+	workflowID := workflow.GetInfo(ctx).WorkflowExecution.ID
+	log.Println("Received POCDemoWorkflow. WorkflowID: ", workflowID)
 
+	cwo1 := workflow.ChildWorkflowOptions{
+		WorkflowID:                   workflowID,
+		ExecutionStartToCloseTimeout: time.Minute * 3,
+	}
+	ctx1 := workflow.WithChildOptions(ctx, cwo1)
+
+	log.Printf("Starting Child Workflow1\n")
+
+	var result1 string
 	var err error
-	err = workflow.ExecuteActivity(
-		nctx,
-		POCDemoActivity1,
-		username,
-	).Get(ctx, nil)
+	future1 := workflow.ExecuteChildWorkflow(ctx1, POCChildWorkflow1, "input1")
+	err = future1.Get(ctx, &result1)
 	if err != nil {
-		workflow.GetLogger(ctx).Error("POCDemoActivity1 failed.", zap.Error(err))
-		return nil, err
+		log.Printf("Error: %s", err)
+		os.Exit(1)
 	}
+	log.Printf("Child Workflow1 ended\n")
 
-	err = workflow.ExecuteActivity(
-		nctx,
-		POCDemoActivity2,
-		username,
-	).Get(ctx, nil)
-	if err != nil {
-		workflow.GetLogger(ctx).Error("POCDemoActivity2 failed.", zap.Error(err))
-		return nil, err
+	cwo2 := workflow.ChildWorkflowOptions{
+		WorkflowID:                   workflowID,
+		ExecutionStartToCloseTimeout: time.Minute * 3,
 	}
+	ctx2 := workflow.WithChildOptions(ctx, cwo2)
+
+	var result2 string
+	future2 := workflow.ExecuteChildWorkflow(ctx2, POCChildWorkflow2, "input2")
+	err = future2.Get(ctx, &result2)
+	if err != nil {
+		log.Printf("Error: %s", err)
+		os.Exit(1)
+	}
+	log.Printf("Child Workflow1 ended\n")
+
+	// username := faker.Username()
+
+	// var err error
+	// err = workflow.ExecuteActivity(
+	// 	nctx,
+	// 	POCDemoActivity1,
+	// 	username,
+	// ).Get(ctx, nil)
+	// if err != nil {
+	// 	workflow.GetLogger(ctx).Error("POCDemoActivity1 failed.", zap.Error(err))
+	// 	return nil, err
+	// }
+
+	// err = workflow.ExecuteActivity(
+	// 	nctx,
+	// 	POCDemoActivity2,
+	// 	username,
+	// ).Get(ctx, nil)
+	// if err != nil {
+	// 	workflow.GetLogger(ctx).Error("POCDemoActivity2 failed.", zap.Error(err))
+	// 	return nil, err
+	// }
 
 	return &POCDemoWorkflowResult{
-		Output: "POCDemoWorkflow is done for username: " + username,
+		Output: "POCDemoWorkflow is done for username: " + result2,
 	}, nil
 }
