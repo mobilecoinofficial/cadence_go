@@ -52,8 +52,8 @@ func POCDemoActivity2(ctx context.Context, input string) (string, error) {
 	return activitySummary, nil
 }
 
-func POCChildWorkflow1(ctx workflow.Context, workflowID string) (*POCDemoWorkflowResult, error) {
-	log.Println("POCChildWorkflow1 is triggered...")
+func POCChildWorkflow1(ctx workflow.Context, input string) (*POCDemoWorkflowResult, error) {
+	log.Printf("POCChildWorkflow1 is triggered with input: %s\n", input)
 
 	res := POCDemoWorkflowResult{}
 
@@ -82,8 +82,8 @@ func POCChildWorkflow1(ctx workflow.Context, workflowID string) (*POCDemoWorkflo
 
 }
 
-func POCChildWorkflow2(ctx workflow.Context, workflowID string) (*POCDemoWorkflowResult, error) {
-	log.Println("POCChildWorkflow2 is triggered...")
+func POCChildWorkflow2(ctx workflow.Context, input string) (*POCDemoWorkflowResult, error) {
+	log.Println("POCChildWorkflow2 is triggered with input: ", input)
 
 	res := POCDemoWorkflowResult{}
 
@@ -166,7 +166,7 @@ func POCWorkflow1(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 	ctx2 := workflow.WithChildOptions(ctx, cwo2)
 
 	var result2 POCDemoWorkflowResult
-	future2 := workflow.ExecuteChildWorkflow(ctx2, POCChildWorkflow2, "input2")
+	future2 := workflow.ExecuteChildWorkflow(ctx2, POCChildWorkflow2, result1.Output)
 	err = future2.Get(ctx, &result2)
 	if err != nil {
 		log.Printf("Error: %s", err)
