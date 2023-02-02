@@ -22,10 +22,7 @@ func POCDemoActivity1(ctx context.Context, input string) (string, error) {
 	username := faker.Username()
 
 	msg := fmt.Sprintf("POCDemoActivity1 activity1 is running on %s\n", hostname)
-	activity.GetLogger(ctx).Info(
-		msg,
-		zap.String("input", input),
-	)
+	log.Println(msg)
 
 	return username, nil
 }
@@ -70,8 +67,8 @@ func POCChildWorkflow1(ctx workflow.Context, input string) (string, error) {
 	err := workflow.ExecuteActivity(
 		nctx,
 		POCDemoActivity1,
-		res,
-	).Get(ctx, nil)
+		input,
+	).Get(ctx, res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow1 failed.", zap.Error(err))
 		return "", err
@@ -97,7 +94,7 @@ func POCChildWorkflow2(ctx workflow.Context, input string) (string, error) {
 		nctx,
 		POCDemoActivity2,
 		input,
-	).Get(ctx, nil)
+	).Get(ctx, res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow2 failed.", zap.Error(err))
 		return "", err
@@ -123,7 +120,7 @@ func POCChildWorkflow3(ctx workflow.Context, input string) (string, error) {
 		nctx,
 		POCDemoActivity3,
 		input,
-	).Get(ctx, nil)
+	).Get(ctx, res)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCChildWorkflow3 failed.", zap.Error(err))
 		return "", err
