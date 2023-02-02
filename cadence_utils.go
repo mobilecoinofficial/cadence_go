@@ -47,10 +47,10 @@ type (
 
 	// Configuration for running samples.
 	Configuration struct {
-		DomainName      string                    `yaml:"domain"`
-		ServiceName     string                    `yaml:"service"`
-		HostNameAndPort string                    `yaml:"host"`
-		Prometheus      *prometheus.Configuration `yaml:"prometheus"`
+		DomainName      string                    `yaml:"CAD_DOMAINNAME"`
+		ServiceName     string                    `yaml:"CAD_SERVICENAME"`
+		HostNameAndPort string                    `yaml:"CAD_HOSTANDPORT"`
+		Prometheus      *prometheus.Configuration `yaml:"CAD_PROMETHEUS"`
 	}
 
 	registryOption struct {
