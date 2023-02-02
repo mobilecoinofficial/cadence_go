@@ -80,13 +80,24 @@ func POCDemoWorkflow(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 
 	username := faker.Username()
 
-	err := workflow.ExecuteActivity(
+	var err error
+	err = workflow.ExecuteActivity(
 		nctx,
 		POCDemoActivity1,
 		username,
 	).Get(ctx, nil)
 	if err != nil {
 		workflow.GetLogger(ctx).Error("POCDemoActivity1 failed.", zap.Error(err))
+		return nil, err
+	}
+
+	err = workflow.ExecuteActivity(
+		nctx,
+		POCDemoActivity2,
+		username,
+	).Get(ctx, nil)
+	if err != nil {
+		workflow.GetLogger(ctx).Error("POCDemoActivity2 failed.", zap.Error(err))
 		return nil, err
 	}
 
