@@ -3,7 +3,7 @@ package cadence_go
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+
 	"os"
 	"time"
 
@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	defaultConfigFile = "config/config.yaml"
+	defaultConfigFile = "config.yaml"
 )
 
 type (
@@ -94,7 +94,7 @@ func (h *CadenceHelper) SetupServiceConfig() {
 		h.configFile = defaultConfigFile
 	}
 	// Initialize developer config for running samples
-	configData, err := ioutil.ReadFile(h.configFile)
+	configData, err := os.ReadFile(h.configFile)
 	if err != nil {
 		// panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", defaultConfigFile, err))
 		fmt.Printf("Failed to log config file: %v, Error: %v\n", defaultConfigFile, err)
@@ -121,7 +121,7 @@ func (h *CadenceHelper) SetupServiceConfig() {
 	}
 
 	if h.Config.DomainName == "" || h.Config.HostNameAndPort == "" || h.Config.ServiceName == "" {
-		fmt.Printf("Configuration Error: Set your config/development.yaml or shell variables\nCAD_DOMAINNAME:%s\nCAD_SERVICENAME=%s\nCAD_HOSTANDPORT=%s\n\n", h.Config.DomainName, h.Config.ServiceName, h.Config.HostNameAndPort)
+		fmt.Printf("Configuration Error: Following variables not found, neither in config file, nor in environment\nCAD_DOMAINNAME:%s\nCAD_SERVICENAME=%s\nCAD_HOSTANDPORT=%s\n\n", h.Config.DomainName, h.Config.ServiceName, h.Config.HostNameAndPort)
 		panic("Check your configuration")
 	}
 
