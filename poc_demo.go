@@ -165,7 +165,7 @@ func POCWorkflow(ctx workflow.Context) (*POCDemoWorkflowResult, error) {
 		log.Printf("Error: %s", err)
 		os.Exit(1)
 	}
-	log.Printf("POCChildWorkflow2 ended with result: %s\n", result1.Output)
+	log.Printf("POCChildWorkflow1 ended with result: %s\n", result1.Output)
 
 	cwo2 := workflow.ChildWorkflowOptions{
 		//WorkflowID:                   workflowID,
