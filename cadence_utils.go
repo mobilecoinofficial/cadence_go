@@ -93,11 +93,13 @@ func (h *CadenceHelper) SetupServiceConfig() {
 	if h.configFile == "" {
 		h.configFile = defaultConfigFile
 	}
+
+	fmt.Printf("Config file: %v\n", h.configFile)
 	// Initialize developer config for running samples
 	configData, err := os.ReadFile(h.configFile)
 	if err != nil {
 		// panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", defaultConfigFile, err))
-		fmt.Printf("Failed to log config file: %v, Error: %v\n", defaultConfigFile, err)
+		fmt.Printf("Failed to open config file: %v, Error: %v\n", defaultConfigFile, err)
 		fmt.Printf("\nLocal env searching...\n")
 	}
 
